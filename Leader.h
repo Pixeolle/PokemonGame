@@ -22,12 +22,12 @@ namespace PokemonGame {
         Leader(const std::string& name, const std::string badge, const std::string gymnase);
         ~Leader() override = default;
 
-        void setDefeated() const;
+        void setDefeated();
         void interact() const override;
         [[nodiscard]] bool canInteract() const override;
 
-        [[nodiscard]] std::string& getBadge() const;
-        [[nodiscard]] std::string& getGymnase() const;
+        [[nodiscard]] const std::string& getBadge() const;
+        [[nodiscard]] const std::string& getGymnase() const;
     };
 
 } // PokemonGame

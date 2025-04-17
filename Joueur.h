@@ -6,6 +6,7 @@
 #define JOUEUR_H
 
 #include <set>
+#include <unordered_set>
 #include <string>
 
 #include "Entraineur.h"
@@ -14,7 +15,7 @@ namespace PokemonGame {
 
     class Joueur final : public Entraineur {
     private:
-        std::set<std::string> badges_;
+        std::unordered_set<std::string> badges_;
         int wins_ = 0;
         int losses_ = 0;
 
@@ -28,7 +29,7 @@ namespace PokemonGame {
         void displayStats() const;
         [[nodiscard]] bool canInteract() const override;
 
-        [[nodiscard]] std::set<std::string>& getBadges() const;
+        [[nodiscard]] const std::unordered_set<std::string>& getBadges() const;
         [[nodiscard]] int getWins() const;
         [[nodiscard]] int getLosses() const;
     };

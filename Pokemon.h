@@ -6,6 +6,7 @@
 #define POKEMON_H
 #include <string>
 #include <vector>
+#include <ostream>
 
 #include "Interagir.h"
 #include "Types.h"
@@ -28,16 +29,18 @@ namespace PokemonGame {
 
         void applyDamage(int damage);
         void heal(int amount);
+        void fullHeal();
         void displayInfo() const;
         [[nodiscard]] bool isFainted() const;
         void interact() const override;
+        friend std::ostream& operator<<(std::ostream& out, const Pokemon& pokemon);
 
         [[nodiscard]] const std::string& getName() const;
-        [[nodiscard]] const int getMaxHp() const;
+        [[nodiscard]] int getMaxHp() const;
         [[nodiscard]] int getHp() const;
         [[nodiscard]] const std::vector<Type>& getTypes() const;
         [[nodiscard]] const std::string& getAttackName() const;
-        [[nodiscard]] const int getAttackPower() const;
+        [[nodiscard]] int getAttackPower() const;
     };
 
 } // PokemonGame

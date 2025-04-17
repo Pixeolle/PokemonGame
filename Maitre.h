@@ -24,7 +24,7 @@ namespace PokemonGame {
         void interact() const override;
         [[nodiscard]] bool canInteract() const override;
 
-        [[nodiscard]] float getDamageBonus() const;
+        [[nodiscard]] const float getDamageBonus() const;
     };
 
 } // PokemonGame

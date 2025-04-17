@@ -14,17 +14,21 @@ namespace PokemonGame {
 
     class TypeManager {
     private:
-        static TypeManager* instance_;
         std::unordered_map<Type, std::unordered_map<Type, float>> multipliers_;
 
         TypeManager();
-        ~TypeManager();
+        ~TypeManager() = default;
+
+        TypeManager(const TypeManager&) = delete;
+        TypeManager& operator=(const TypeManager&) = delete;
+        TypeManager(TypeManager&&) = delete;
+        TypeManager& operator=(TypeManager&&) = delete;
 
     public:
         void loadMultipliers(std::unordered_map<Type, std::unordered_map<Type, float>>& multipliers);
-        [[nodiscard]] float getMultiplier(const std::vector<Type>& attackType, const std::vector<Type>& defenseType);
 
-        [[nodiscard]] static TypeManager* getInstance();
+        [[nodiscard]] static TypeManager& getInstance();
+        [[nodiscard]] float getMultiplier(const std::vector<Type>& attackTypes, const std::vector<Type>& defenseTypes) const;
     };
 
 } // PokemonGame

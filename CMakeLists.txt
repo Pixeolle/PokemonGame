@@ -5,9 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(PokemonGame main.cpp
         Types.h
-        Pokemon.h
+        Types.cpp
         Interagir.h
-        Entraineur.h
         Joueur.cpp
         Joueur.h
         Maitre.cpp
@@ -21,4 +20,11 @@ add_executable(PokemonGame main.cpp
         CombatManager.cpp
         CombatManager.h
         Menu.cpp
-        Menu.h)
+        Menu.h
+        Pokemon.cpp
+        Pokemon.h
+        Utils.cpp
+        Utils.h
+        Entraineur.cpp
+        Entraineur.h)
+

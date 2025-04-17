@@ -17,6 +17,7 @@ namespace PokemonGame {
     protected:
         const std::string name_;
         std::vector<std::unique_ptr<Pokemon>> pokemonTeam_;
+        static constexpr int limitPokemon = 6;
 
     public:
         explicit Entraineur(const std::string& name);
@@ -29,9 +30,9 @@ namespace PokemonGame {
         void displayTeam() const;
         [[nodiscard]] virtual bool canInteract() const = 0;
 
-        [[nodiscard]] std::string& getName() const;
-        [[nodiscard]] std::vector<std::unique_ptr<Pokemon>> getPokemonTeam() const;
-        [[nodiscard]] std::unique_ptr<Pokemon> getPokemon(int index) const;
+        [[nodiscard]] const std::string& getName() const;
+        [[nodiscard]] const std::vector<std::unique_ptr<Pokemon>>& getPokemonTeam() const;
+        [[nodiscard]] const Pokemon* getPokemon(int index) const;
     };
 
 } // PokemonGame
