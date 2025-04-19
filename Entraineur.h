@@ -24,7 +24,7 @@ namespace PokemonGame {
         virtual ~Entraineur() = default;
 
         void healTeam();
-        void addPokemon(std::unique_ptr<Pokemon> pokemon);
+        void addPokemon(Pokemon& pokemon);
         void removePokemon(int index);
         void switchPokemon(int index1, int index2);
         void displayTeam() const;

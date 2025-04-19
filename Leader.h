@@ -19,11 +19,12 @@ namespace PokemonGame {
         bool isDefeated_ = false;
 
     public:
-        Leader(const std::string& name, const std::string badge, const std::string gymnase);
+        Leader(const std::string& name, const std::string& badge, const std::string& gymnase);
         ~Leader() override = default;
 
         void setDefeated();
         void interact() const override;
+        void displayInfo() const;
         [[nodiscard]] bool canInteract() const override;
 
         [[nodiscard]] const std::string& getBadge() const;

@@ -13,6 +13,8 @@ namespace PokemonGame::Utils::String {
 
     [[nodiscard]] std::string trim(std::string str);
 
+    [[nodiscard]] std::string trimValidate(const std::string& imput, const std::string& fieldName);
+
     [[nodiscard]] std::string trimValidateTitle(const std::string& input, const std::string& fieldName);
 
 } // PokemonGame

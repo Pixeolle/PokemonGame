@@ -10,8 +10,8 @@
 namespace PokemonGame {
 
     Entraineur::Entraineur(const std::string& name) :
-        name_(Utils::String::trimValidateTitle(name, "nom du dresseur")),
-        pokemonTeam_({}) {}
+        name_(Utils::String::trimValidateTitle(name, "nom du dresseur"))
+        {}
 
     void Entraineur::healTeam() {
         for (auto& pokemon : pokemonTeam_) {
@@ -19,11 +19,11 @@ namespace PokemonGame {
         }
     }
 
-    void Entraineur::addPokemon(std::unique_ptr<Pokemon> pokemon) {
+    void Entraineur::addPokemon(Pokemon& pokemon) {
         if (pokemonTeam_.size() >= limitPokemon) {
             throw std::invalid_argument("Impossible de dépasser la limite de pokémon");
         }
-        pokemonTeam_.push_back(pokemon);
+        pokemonTeam_.emplace_back(std::make_unique<Pokemon>(pokemon));
     }
 
     void Entraineur::removePokemon(int index) {
@@ -43,7 +43,7 @@ namespace PokemonGame {
     void Entraineur::displayTeam() const {
         std::cout << "Équipe de " << name_ << " : \n";
         for (int i = 0; i < pokemonTeam_.size(); i++) {
-            std::cout << pokemonTeam_[i];
+            std::cout << "   ↳ " << *pokemonTeam_[i];
 
             if (i < pokemonTeam_.size() - 1) {
                 std::cout << "\n";

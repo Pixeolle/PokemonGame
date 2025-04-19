@@ -28,10 +28,12 @@ namespace PokemonGame {
         DRAGON,
         TENEBRES,
         ACIER,
-        FEE
+        FEE,
+        NORMAL
     };
 
     [[nodiscard]] std::string typeToString(Type type);
+    [[nodiscard]] Type stringToType(const std::string& typeName);
     std::ostream& operator<<(std::ostream& out, Type type);
     std::ostream& operator<<(std::ostream& out, const std::vector<Type>& types);
 

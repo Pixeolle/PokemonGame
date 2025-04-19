@@ -35,6 +35,15 @@ namespace PokemonGame::Utils {
         return std::string(start, end + 1);
     }
 
+    std::string String::trimValidate(const std::string& input, const std::string& fieldName) {
+        std::string trimmed = trim(input);
+        if (trimmed.empty()) {
+            throw std::invalid_argument("Le " + fieldName + " ne peut pas être vide ou uniquement des espaces.");
+        }
+
+        return trimmed;
+    }
+
     std::string String::trimValidateTitle(const std::string& input, const std::string& fieldName) {
         std::string trimmed = trim(input);
         if (trimmed.empty()) {

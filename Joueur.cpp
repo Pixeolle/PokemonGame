@@ -9,7 +9,7 @@
 
 namespace PokemonGame {
 
-    Joueur::Joueur(const std::string& name) : badges_({}), Entraineur(name) {}
+    Joueur::Joueur(const std::string& name) : Entraineur(name) {}
 
     void Joueur::addBadge(const std::string& badgeName) {
         if (badgeName.empty()) {

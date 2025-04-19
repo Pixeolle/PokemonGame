@@ -26,6 +26,7 @@ namespace PokemonGame {
 
     public:
         void loadMultipliers(std::unordered_map<Type, std::unordered_map<Type, float>>& multipliers);
+        void displayMultiplierMatrix() const;
 
         [[nodiscard]] static TypeManager& getInstance();
         [[nodiscard]] float getMultiplier(const std::vector<Type>& attackTypes, const std::vector<Type>& defenseTypes) const;
