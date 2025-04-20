@@ -34,8 +34,8 @@ namespace PokemonGame {
 
         [[nodiscard]] std::unordered_map<std::string, std::unique_ptr<Pokemon>> loadPokemon() const;
         [[nodiscard]] std::unique_ptr<Joueur> loadJoueur(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const;
-        [[nodiscard]] std::vector<std::unique_ptr<Leader>> loadLeader(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const;
-        [[nodiscard]] std::vector<std::unique_ptr<Maitre>> loadMaitre(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const;
+        [[nodiscard]] std::vector<std::unique_ptr<Leader>> loadLeaders(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const;
+        [[nodiscard]] std::vector<std::unique_ptr<Maitre>> loadMaitres(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const;
         void loadTypeMultipliers(TypeManager& typManager) const;
     };
 

@@ -15,14 +15,14 @@ namespace PokemonGame {
     private:
         Joueur* player_ = nullptr;
         Entraineur* entraineur_ = nullptr;
-        TypeManager* typeManager_ = nullptr;
+        TypeManager& typeManager_;
 
         void playerTurn();
         void oppoentTurn();
         [[nodiscard]] bool checkCombatEnd() const;
 
     public:
-        explicit CombatManager(TypeManager* typeManager);
+        explicit CombatManager(TypeManager& typeManager);
         ~CombatManager() = default;
 
         bool startCombat(Joueur* player, Entraineur* opponent);

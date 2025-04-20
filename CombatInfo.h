@@ -31,7 +31,7 @@ struct CombatStateInfo {
 struct TurnInfo {
     std::vector<std::string> messages;
     bool combatEnded = false;
-    std::string winnerName = "";
+    std::string winnerName;
 };
 
 struct ActionRequestInfo {
@@ -42,7 +42,7 @@ struct ActionRequestInfo {
 
 struct ChosenAction {
     PlayerActionType actionType;
-    std::string choiceName = "";
+    std::string choiceName;
 };
 
 

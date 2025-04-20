@@ -165,7 +165,7 @@ namespace PokemonGame {
         return player;
     }
 
-    std::vector<std::unique_ptr<Leader>> DataLoader::loadLeader(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const {
+    std::vector<std::unique_ptr<Leader>> DataLoader::loadLeaders(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const {
         std::ifstream file(leaderFilePath_);
         if (!file.is_open()) {
             throw std::invalid_argument("Impossible d'ouvrir  le fichier " + leaderFilePath_);
@@ -230,7 +230,7 @@ namespace PokemonGame {
         return leaders;
     }
 
-    std::vector<std::unique_ptr<Maitre>> DataLoader::loadMaitre(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const {
+    std::vector<std::unique_ptr<Maitre>> DataLoader::loadMaitres(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const {
         std::ifstream file(maitreFilePath_);
         if (!file.is_open()) {
             throw std::invalid_argument("Impossible d'ouvrir  le fichier " + maitreFilePath_);

@@ -17,6 +17,24 @@ namespace PokemonGame::Utils::String {
 
     [[nodiscard]] std::string trimValidateTitle(const std::string& input, const std::string& fieldName);
 
+    void promptAndValidatePath(const std::string& prompt, const std::string& defaultPath, std::string& resultPath, int boxWidth);
+
 } // PokemonGame
+
+namespace PokemonGame::Utils::Display {
+
+    void clearConsole();
+
+    int getConsoleWidth();
+
+    void printCentered(const std::string& text);
+
+    void drawBoxLine(const std::string& start, const std::string& middle, const std::string& end, int width);
+
+    void printInBox(const std::string& text, int boxWidth);
+
+    int estimateUtf8DisplayWidth(const std::string& text);
+
+}
 
 #endif //UTILS_H

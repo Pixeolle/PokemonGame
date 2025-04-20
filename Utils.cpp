@@ -2,9 +2,13 @@
 // Created by olbnf on 17/04/2025.
 //
 
+#include <stdexcept>
+#include <iostream>
+#include <iomanip>
+
 #include "Utils.h"
 
-#include <stdexcept>
+#include <filesystem>
 
 namespace PokemonGame::Utils {
 
@@ -52,4 +56,142 @@ namespace PokemonGame::Utils {
 
         return toTitle(trimmed);
     }
+
+    void String::promptAndValidatePath(const std::string& prompt, const std::string& defaultPath, std::string& resultPath, int boxWidth) {
+        std::string inputPath;
+        bool pathIsValid = false;
+
+        int consoleWidth = Display::getConsoleWidth();
+
+
+        while (!pathIsValid) {
+            Display::printInBox(prompt, boxWidth);
+            Display::printInBox("[Défaut: " + defaultPath + "]", boxWidth);
+            Display::printInBox("Entrez le chemin (ou laissez vide pour défaut):", boxWidth);
+            Display::drawBoxLine("├", "─", "┤", boxWidth);
+            std::cout << "│ > ";
+
+            if (std::getline(std::cin, inputPath)) {
+                if (inputPath.empty()) {
+                    resultPath = defaultPath;
+                    Display::printInBox("-> Utilisation du chemin par défaut.", boxWidth);
+
+                } else {
+                    resultPath = inputPath;
+                    Display::printInBox("-> Chemin saisi: " + resultPath, boxWidth);
+                }
+
+                if (std::filesystem::exists(resultPath)) {
+                     std::cout << "│ " << "\033[32m" << "[OK] Fichier trouvé." << "\033[0m" << std::left << std::setw(boxWidth - 23) << "" << "│" << std::endl; // Vert
+                    pathIsValid = true;
+                } else {
+                    std::cout << "│ " << "\033[31m" << "[ERREUR] Fichier non trouvé : " << resultPath << "\033[0m" << std::left << std::setw(boxWidth - 31 - resultPath.length()) << "" << "│" << std::endl; // Rouge
+
+                }
+            } else {
+                 throw std::invalid_argument("Erreur de lecture de l'entrée.");
+            }
+            Display::drawBoxLine("├", "─", "┤", boxWidth);
+        }
+    }
+
+    #ifdef _WIN32
+    #include <windows.h>
+        void Display::clearConsole() {
+            HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+            COORD coordScreen = { 0, 0 };
+            DWORD cCharsWritten;
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            DWORD dwConSize;
+            if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
+            dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+            if (!FillConsoleOutputCharacter(hConsole, (TCHAR)' ', dwConSize, coordScreen, &cCharsWritten)) return;
+            if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
+            if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten)) return;
+            SetConsoleCursorPosition(hConsole, coordScreen);
+        }
+
+        int Display::getConsoleWidth() {
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+                return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+            }
+            return 80;
+        }
+
+    #else
+    #include <cstdlib>
+    #include <sys/ioctl.h>
+    #include <unistd.h>
+
+        void Display::clearConsole() {
+            std::cout << "\033[2J\033[H" << std::flush;
+        }
+
+        int Display::getConsoleWidth() {
+            struct winsize size;
+            if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
+                return size.ws_col;
+            }
+            return 80;
+        }
+
+    #endif
+
+    void Display::printCentered(const std::string& text) {
+        int consoleWidth = Display::getConsoleWidth();
+        int textLength = text.length();
+        int padding = (consoleWidth - textLength) / 2;
+        if (padding < 0) padding = 0;
+
+        std::cout << std::setw(padding) << "" << text << std::endl;
+    }
+
+    void Display::drawBoxLine(const std::string& start, const std::string& middle, const std::string& end, int width) {
+
+        if (middle.empty()) {
+            throw std::invalid_argument("Le caractère du milieu ne peut pas être vide dans drawBoxLine.");
+        }
+
+        if (width < 2) {
+            if (width == 1) std::cout << start;
+            std::cout << std::endl;
+            return;
+        }
+
+        std::cout << start;
+        for (int i = 0; i < width - 2; ++i) {
+            std::cout << middle;
+        }
+        std::cout << end << std::endl;
+    }
+
+    void Display::printInBox(const std::string& text, int boxWidth) {
+        int padding = boxWidth - 3 - estimateUtf8DisplayWidth(text);
+        if (padding < 0) padding = 0;
+        std::cout << "│ " << text << std::string(padding, ' ') << "│" << std::endl;
+    }
+
+    int Display::estimateUtf8DisplayWidth(const std::string& text) {
+        int width = 0;
+        for (size_t i = 0; i < text.length();) {
+            unsigned char c = text[i];
+            width++;
+
+            if ((c & 0x80) == 0) {
+                i += 1;
+            } else if ((c & 0xE0) == 0xC0) {
+                i += 2;
+            } else if ((c & 0xF0) == 0xE0) {
+                i += 3;
+            } else if ((c & 0xF8) == 0xF0) {
+                i += 4;
+            } else {
+                i += 1;
+            }
+            if (i > text.length()) i = text.length();
+        }
+        return width;
+    }
+
 } // PokemonGame

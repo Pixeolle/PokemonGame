@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "TypeManager.h"
 #include "CombatManager.h"
 #include "DataLoader.h"
 #include "Joueur.h"
@@ -25,14 +26,13 @@ namespace PokemonGame {
         std::vector<std::unique_ptr<Maitre>> maitres_;
         std::unordered_map<std::string, std::unique_ptr<Pokemon>> pokemons_;
         CombatManager combatManager_;
-        DataLoader dataLoader_;
-        TypeManager* typeManager_ = nullptr;
+        TypeManager& typeManager_;
 
-        void loadData();
+        [[nodiscard]] bool loadData();
 
     public:
         Menu();
-        ~Menu();
+        ~Menu() = default;
 
         void run();
     };

@@ -26,5 +26,7 @@ add_executable(PokemonGame main.cpp
         Utils.cpp
         Utils.h
         Entraineur.cpp
-        Entraineur.h)
+        Entraineur.h
+        CombatInfo.h
+)
 

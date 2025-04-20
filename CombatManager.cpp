@@ -5,4 +5,8 @@
 #include "CombatManager.h"
 
 namespace PokemonGame {
+
+    CombatManager::CombatManager(TypeManager& typeManager) : typeManager_(typeManager) {}
+
+
 } // PokemonGame
