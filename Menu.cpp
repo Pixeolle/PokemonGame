@@ -13,7 +13,8 @@ namespace PokemonGame {
 
         Menu::Menu()
             : typeManager_(TypeManager::getInstance()),
-              combatManager_(typeManager_) {
+              combatManager_(typeManager_),
+              boxWidth_(std::min(80, Utils::Display::getConsoleWidth() - 4)){
 
             int consoleWidth = Utils::Display::getConsoleWidth();
             int boxWidth = std::min(80, consoleWidth - 4);
@@ -60,8 +61,6 @@ namespace PokemonGame {
         bool Menu::loadData() {
 
             Utils::Display::clearConsole();
-            int consoleWidth = Utils::Display::getConsoleWidth();
-            int boxWidth = std::min(80, consoleWidth - 4);
 
             const std::string defaultPokemonFile = R"(C:\Users\olbnf\Downloads\pokemon.csv)";
             const std::string defaultJoueurFile = R"(C:\Users\olbnf\Downloads\joueur.csv)";
@@ -75,19 +74,19 @@ namespace PokemonGame {
             std::string leaderFilePath = defaultLeadersFile;
             std::string maitreFilePath = defaultMaitresFile;
 
-            Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth);
-            Utils::Display::printInBox("Configuration des Fichiers de Données", boxWidth);
-            Utils::Display::drawBoxLine("├", "─", "┤", boxWidth);
+            Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+            Utils::Display::printInBox("Configuration des Fichiers de Données", boxWidth_);
+            Utils::Display::drawBoxLine("├", "─", "┤", boxWidth_);
 
             try {
-                Utils::String::promptAndValidatePath("Chemin Fichier Pokémon:", defaultPokemonFile, pokemonFilePath, boxWidth);
-                Utils::String::promptAndValidatePath("Chemin Fichier Types:", defaultTypesMultiplierFile, typeMultipliersFilePath, boxWidth);
-                Utils::String::promptAndValidatePath("Chemin Fichier Joueur:", defaultJoueurFile, joueurFilePath, boxWidth);
-                Utils::String::promptAndValidatePath("Chemin Fichier Leaders:", defaultLeadersFile, leaderFilePath, boxWidth);
-                Utils::String::promptAndValidatePath("Chemin Fichier Maîtres:", defaultMaitresFile, maitreFilePath, boxWidth);
+                Utils::String::promptAndValidatePath("Chemin Fichier Pokémon:", defaultPokemonFile, pokemonFilePath, boxWidth_);
+                Utils::String::promptAndValidatePath("Chemin Fichier Types:", defaultTypesMultiplierFile, typeMultipliersFilePath, boxWidth_);
+                Utils::String::promptAndValidatePath("Chemin Fichier Joueur:", defaultJoueurFile, joueurFilePath, boxWidth_);
+                Utils::String::promptAndValidatePath("Chemin Fichier Leaders:", defaultLeadersFile, leaderFilePath, boxWidth_);
+                Utils::String::promptAndValidatePath("Chemin Fichier Maîtres:", defaultMaitresFile, maitreFilePath, boxWidth_);
 
-                Utils::Display::printInBox("Tous les chemins sont valides. Chargement...", boxWidth);
-                Utils::Display::drawBoxLine("└", "─", "┘", boxWidth);
+                Utils::Display::printInBox("Tous les chemins sont valides. Chargement...", boxWidth_);
+                Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
 
                 std::cout << "\nChemins finaux utilisés :" << std::endl;
                 std::cout << "- Pokémon: " << pokemonFilePath << std::endl;
@@ -127,7 +126,27 @@ namespace PokemonGame {
             }
         }
 
+        bool Menu::isOver() const {
+            for (auto& leader : leaders_) {
+                if (!leader->canInteract()) {
+                    return false;
+                }
+            }
+
+            for (auto& maitre : maitres_) {
+                if (!maitre->canInteract()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
         void Menu::run() {
+
+
+
+            Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
             std::cout << "Le jeu Commence !!" << std::endl;
 
             player_->displayStats();

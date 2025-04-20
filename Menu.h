@@ -27,8 +27,10 @@ namespace PokemonGame {
         std::unordered_map<std::string, std::unique_ptr<Pokemon>> pokemons_;
         CombatManager combatManager_;
         TypeManager& typeManager_;
+        int boxWidth_;
 
         [[nodiscard]] bool loadData();
+        [[nodiscard]] bool isOver() const;
 
     public:
         Menu();
