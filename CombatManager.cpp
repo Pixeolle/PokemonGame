@@ -7,7 +7,7 @@
 
 namespace PokemonGame {
 
-    CombatManager::CombatManager(TypeManager& typeManager) : typeManager_(typeManager) {}
+    CombatManager::CombatManager() : typeManager_(TypeManager::getInstance()), playerPokemonIndex_(0), opponentPokemonIndex_(0) {}
 
     int CombatManager::checkCombatEnd() const {
 
@@ -31,7 +31,6 @@ namespace PokemonGame {
         return true;
     }
 
-
     void CombatManager::startCombat(Joueur *player, Entraineur *opponent) {
         player_ = player;
         entraineur_ = opponent;
@@ -47,15 +46,15 @@ namespace PokemonGame {
 
 
         info.messages.push_back(playerPokemon->getName() + " attaque " + playerPokemon->getAttackName());
-        // float multiplier = typeManager_.getMultiplier(playerPokemon->getTypes(), opponentPokemon->getTypes());
+        float multiplier = typeManager_.getMultiplier(playerPokemon->getTypes(), opponentPokemon->getTypes());
         int totalDamage = damage;
         info.messages.push_back(playerPokemon->getName() + " inflige " + std::to_string(totalDamage) + " dégâts");
-        // if (multiplier >= 2) {
-        //     info.messages.emplace_back("C'est super efficace !!");
-        // }
-        // else if (multiplier <= 0.5){
-        //     info.messages.emplace_back("Ce n'est pas très efficace...");
-        // }
+        if (multiplier >= 2) {
+            info.messages.emplace_back("C'est super efficace !!");
+        }
+        else if (multiplier <= 0.5){
+            info.messages.emplace_back("Ce n'est pas très efficace...");
+        }
 
         opponentPokemon->applyDamage(totalDamage);
 
@@ -86,16 +85,16 @@ namespace PokemonGame {
         int damage = playerPokemon->getAttackPower();
 
         info.messages.push_back(opponentPokemon->getName() + " attaque " + opponentPokemon->getAttackName());
-        // float multiplier = typeManager_.getMultiplier(opponentPokemon->getTypes(), playerPokemon->getTypes());
+        float multiplier = typeManager_.getMultiplier(opponentPokemon->getTypes(), playerPokemon->getTypes());
         int totalDamage = damage;
 
         info.messages.push_back(opponentPokemon->getName() + " inflige à " + std::to_string(totalDamage) + " dégâts");
-        // if (multiplier >= 2) {
-        //     info.messages.emplace_back("C'est super efficace !!");
-        // }
-        // else if (multiplier <= 0.5){
-        //     info.messages.emplace_back("Ce n'est pas très efficace...");
-        // }
+        if (multiplier >= 2) {
+            info.messages.emplace_back("C'est super efficace !!");
+        }
+        else if (multiplier <= 0.5){
+            info.messages.emplace_back("Ce n'est pas très efficace...");
+        }
 
         playerPokemon->applyDamage(totalDamage);
 

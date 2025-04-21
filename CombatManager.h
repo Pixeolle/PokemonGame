@@ -24,7 +24,7 @@ namespace PokemonGame {
 
 
     public:
-        explicit CombatManager(TypeManager& typeManager);
+        CombatManager();
         ~CombatManager() = default;
 
         void startCombat(Joueur* player, Entraineur* opponent);

@@ -16,7 +16,7 @@ namespace PokemonGame {
     private:
         std::unordered_map<Type, std::unordered_map<Type, float>> multipliers_;
 
-        TypeManager();
+        TypeManager() = default;
         ~TypeManager() = default;
 
         TypeManager(const TypeManager&) = delete;

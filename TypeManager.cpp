@@ -9,8 +9,6 @@
 
 namespace PokemonGame {
 
-    TypeManager::TypeManager() {}
-
     void TypeManager::loadMultipliers(std::unordered_map<Type, std::unordered_map<Type, float>>& multipliers) {
         multipliers_ = multipliers;
     }

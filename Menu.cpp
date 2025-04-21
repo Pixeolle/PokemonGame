@@ -6,6 +6,7 @@
 #include <thread>
 #include <iomanip>
 #include <conio.h>
+#include <random>
 
 #include "Menu.h"
 #include "Utils.h"
@@ -13,8 +14,7 @@
 namespace PokemonGame {
 
         Menu::Menu()
-            : typeManager_(TypeManager::getInstance()),
-              combatManager_(typeManager_),
+            : combatManager_(),
               boxWidth_(std::min(80, Utils::Display::getConsoleWidth() - 4)),
               selectedPokemonIndex_(0){
 
@@ -107,7 +107,7 @@ namespace PokemonGame {
 
                 pokemons_ = dataLoader.loadPokemon();
 
-                dataLoader.loadTypeMultipliers(typeManager_);
+                dataLoader.loadTypeMultipliers();
 
                 player_ = dataLoader.loadJoueur(pokemons_);
 
@@ -149,8 +149,12 @@ namespace PokemonGame {
                         handleMainMenu();
                         break;
 
-                    case MenuState::TRAINER_LIST:
-                        handleTrainerList();
+                    case MenuState::POKEMON_LIST:
+                        handlePokemonList();
+                        break;
+
+                    case MenuState::HEAL:
+                        handleHeal();
                         break;
 
                     case MenuState::PLAYER_POKEMON_LIST:
@@ -164,108 +168,108 @@ namespace PokemonGame {
                     case MenuState::POKEMON_REORDER_SELECT_TARGET:
                         handlePokemonReorder();
                         break;
+
+                    case MenuState::PLAYER_STATISTIQUES:
+                        handlePlayerStatistiques();
+                        break;
+
+                    case MenuState::LEADER_LIST:
+                        handleTrainerList();
+                        break;
+
+                    case MenuState::CHALLENGE_MASTER:
+                        handleChallengeMaster();
+                        break;
+
+                    case MenuState::INTERACT:
+                        handleInteract();
+                        break;
                 }
             }
-
-
         }
 
         void Menu::handleMainMenu() {
             std::string prompt = "Menu Principal";
-            std::vector<std::string> choices = {"Affronter Dresseurs", "Gérer mes Pokémons", "Quitter"};
+            std::vector<std::string> choices = {"Pokédex", "Soigner mon équipe", "Gérer mes Pokémons", "Afficher mes statistiques", "Affronter un Leader", "Défier un Maitre", "Quitter"};
             int result = selectChoices(prompt , choices);
             switch (result) {
                 case -1:
-                case 2:
+                case 6:
                     stateStack_.pop();
                     break;
 
                 case 0:
-                    stateStack_.push(MenuState::TRAINER_LIST);
-                    break;
-
-                case 1:
                     stateStack_.push(MenuState::POKEMON_LIST);
                     break;
 
+                case 1:
+                    stateStack_.push(MenuState::HEAL);
+                    break;
+
+                case 2:
+                    stateStack_.push(MenuState::PLAYER_POKEMON_LIST);
+                    break;
+
+                case 3:
+                    stateStack_.push(MenuState::PLAYER_STATISTIQUES);
+                    break;
+
+                case 4:
+                    stateStack_.push(MenuState::LEADER_LIST);
+                    break;
+
+                case 5:
+                    stateStack_.push(MenuState::CHALLENGE_MASTER);
+                    break;
             }
         }
 
-        void Menu::handleTrainerList() {
-            std::string prompt = "Liste des Dresseurs";
-            std::vector<std::string> choices;
-            std::vector<Entraineur*> trainers;
-            for (const auto& leader : leaders_) {
-                choices.push_back(leader->getName() + " (" + leader->getGymnase() + ")");
-                trainers.push_back(leader.get());
+        void Menu::handlePokemonList() {
+            Utils::Display::clearConsole();
+            Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+            Utils::Display::printInBox("Pokédex", boxWidth_);
+            Utils::Display::drawBoxLine("├", "─", "┤", boxWidth_);
+            for (const auto& pokemonMap : pokemons_) {
+                Pokemon* pokemon = pokemonMap.second.get();
+                Utils::Display::printInBox(pokemon->getName() + "(" + typesToString(pokemon->getTypes()) + ") : " + std::to_string(pokemon->getMaxHp()) + "HP", boxWidth_);
+                Utils::Display::printInBox("   ↳ " + pokemon->getAttackName() + " : " + std::to_string(pokemon->getAttackPower()), boxWidth_);
+                Utils::Display::printInBox(" ", boxWidth_);
             }
+            Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+            std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+            std::cin.get();
 
-            for (const auto& maitre : maitres_) {
-                choices.push_back(maitre->getName() + " (Maitre)");
-                trainers.push_back(maitre.get());
-            }
-
-            int result = selectChoices(prompt , choices);
-            if (result == -1) {
-                stateStack_.pop();
-                return;
-            }
-
-            Entraineur* selectedTrainer = trainers[result];
-
-            if (const auto leader = dynamic_cast<Leader*>(selectedTrainer)) {
-                if (!leader->canInteract()) {
-                    handleCombat(leader);
-                }
-                else {
-                    Utils::Display::clearConsole();
-                    Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
-                    Utils::Display::printInBox(leader->getName() + " : " + leader->interact(), boxWidth_);
-                    Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
-                    std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
-                    std::cin.get();
-                }
-            }
-            else if (const auto maitre = dynamic_cast<Maitre*>(selectedTrainer)) {
-                if (allLeaderDefeated()) {
-                    handleCombat(maitre);
-                }
-                else if (maitre->canInteract()){
-                    Utils::Display::clearConsole();
-                    Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
-                    Utils::Display::printInBox(maitre->getName() + " : " + maitre->interact(), boxWidth_);
-                    Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
-                    std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
-                    std::cin.get();
-                }
-                else {
-                    Utils::Display::clearConsole();
-                    Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
-                    Utils::Display::printInBox("Reviens me voir lorsque tu auras battu tout les leaders", boxWidth_);
-                    Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
-                    std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
-                    std::cin.get();
-                }
-            }
             stateStack_.pop();
         }
 
-        void Menu::handlePlayerPokemonList() {
-            std::string prompt = "Mes Pokémons";
-            std::vector<std::string> choices;
+        void Menu::handleHeal() {
+                player_->healTeam();
+                Utils::Display::clearConsole();
+                Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+                Utils::Display::printInBox("Tous tes pokémons sont de nouveau en forme", boxWidth_);
+                Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+                std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+                std::cin.get();
 
-            for (const auto& pokemon : player_->getPokemonTeam()) {
-                choices.push_back(pokemon->getName());
-            }
-
-            int result = selectChoices(prompt , choices);
-            if (result == -1) {
                 stateStack_.pop();
-                return;
-            }
+        }
 
-            selectedPokemonIndex_ = result;
-            stateStack_.push(MenuState::POKEMON_ACTIONS);
+        void Menu::handlePlayerPokemonList() {
+                std::string prompt = "Mes Pokémons";
+                std::vector<std::string> choices;
+
+                for (const auto& pokemon : player_->getPokemonTeam()) {
+                    choices.push_back(pokemon->getName());
+                }
+
+                int result = selectChoices(prompt , choices);
+                if (result == -1) {
+                    stateStack_.pop();
+                    return;
+                }
+
+                selectedPokemonIndex_ = result;
+                stateStack_.push(MenuState::POKEMON_ACTIONS);
 
         }
 
@@ -317,7 +321,105 @@ namespace PokemonGame {
             stateStack_.pop();
         }
 
-        void Menu::handleCombat(Entraineur *dresseur) {
+        void Menu::handlePlayerStatistiques() {
+            Utils::Display::clearConsole();
+            Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+            Utils::Display::printInBox(player_->getName(), boxWidth_);
+            Utils::Display::drawBoxLine("├", "─", "┤", boxWidth_);
+            Utils::Display::printInBox("Wins : " + std::to_string(player_->getWins()) + " | Losses : " + std::to_string(player_->getLosses()) , boxWidth_);
+            Utils::Display::drawBoxLine("├", "─", "┤", boxWidth_);
+            Utils::Display::printInBox("Badges : " + std::to_string(player_->getBadges().size()), boxWidth_);
+            for (const auto& badge : player_->getBadges()) {
+                Utils::Display::printInBox(badge, boxWidth_);
+            }
+            Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+            std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+            std::cin.get();
+
+            stateStack_.pop();
+        }
+
+        void Menu::handleTrainerList() {
+                std::string prompt = "Liste des Leaders";
+                std::vector<std::string> choices;
+                for (const auto& leader : leaders_) {
+                    choices.push_back(leader->getName() + " (" + leader->getGymnase() + ")");
+                }
+
+                int result = selectChoices(prompt , choices);
+                if (result == -1) {
+                    stateStack_.pop();
+                    return;
+                }
+
+                Leader* selectedLeader = leaders_[result].get();
+
+                if (!selectedLeader->canInteract()) {
+                    bool win = handleCombat(selectedLeader);
+                    if (win) {
+                        player_->addBadge(selectedLeader->getBadge());
+                        interactTrainer_.push_back(selectedLeader);
+                    }
+                }
+                else {
+                    Utils::Display::clearConsole();
+                    Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+                    Utils::Display::printInBox(selectedLeader->getName() + " : " + selectedLeader->interact(), boxWidth_);
+                    Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+                    std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+                    std::cin.get();
+                }
+                stateStack_.pop();
+            }
+
+        void Menu::handleChallengeMaster() {
+            Utils::Display::clearConsole();
+            if (maitres_.empty()) {
+                Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+                Utils::Display::printInBox("Aucun Maitre n'est disponible", boxWidth_);
+                Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+            }
+
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<size_t> distrib(0, maitres_.size() - 1);
+            size_t randomIndex = distrib(gen);
+
+            if (handleCombat(maitres_[randomIndex].get())) {
+                interactTrainer_.push_back(maitres_[randomIndex].get());
+            }
+            stateStack_.pop();
+        }
+
+        void Menu::handleInteract() {
+            std::string prompt = "Entraineurs ";
+            std::vector<std::string> choices;
+            for (const auto& trainer : interactTrainer_) {
+                choices.push_back(trainer->getName());
+            }
+
+            int result = selectChoices(prompt , choices);
+            if (result == -1) {
+                stateStack_.pop();
+                return;
+            }
+            Entraineur* selectedTrainer = interactTrainer_[result];
+
+
+            Utils::Display::clearConsole();
+            Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+            if (Leader* leader = dynamic_cast<Leader*>(selectedTrainer)) {
+                Utils::Display::printInBox(selectedTrainer->getName() + " : " + leader->interact(), boxWidth_);
+            }
+            else if (Maitre* maitre = dynamic_cast<Maitre*>(selectedTrainer)) {
+                Utils::Display::printInBox(selectedTrainer->getName() + " : " + maitre->interact(), boxWidth_);
+            }
+            Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+            std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+            std::cin.get();
+        }
+
+        bool Menu::handleCombat(Entraineur *dresseur) {
             combatManager_.startCombat(player_.get(), dresseur);
             int i = 0;
             TurnInfo turn;
@@ -339,13 +441,18 @@ namespace PokemonGame {
 
                 displayCombat(turn);
 
-                std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+                std::cout << "Appuyez sur Entrée pour continuer..."<< std::endl;
                 std::cin.get();
                 i++;
 
             }
 
             dresseur->healTeam();
+
+            if (combatManager_.checkCombatEnd() == 1) {
+                return false;
+            }
+            return true;
         }
 
         void Menu::displayCombat(TurnInfo turn) const {
@@ -371,29 +478,32 @@ namespace PokemonGame {
             Utils::Display::printInBox(info.name, boxWidth_ - offset);
             Utils::Display::drawBoxLine("├", "─", "┤", boxWidth_ - offset, false);
             std::cout << "────────┐" << std::endl;
-            std::string playerHp = std::to_string(info.currentHp);
-            std::string playerMaxHp = std::to_string(info.maxHp);
 
-            std::string hp = info.currentHp > info.maxHp * 0.25f ? "\033[32m" : "\033[31m";
+            std::string playerHpStr = std::to_string(info.currentHp);
+            std::string playerMaxHpStr = std::to_string(info.maxHp);
+            float hpFraction = static_cast<float>(info.currentHp) / info.maxHp;
 
-            int i = 0;
-            while (i < info.currentHp / info.maxHp * (boxWidth_ - 4 - offset)) {
+            const int maxBarVisualWidth = std::max(0, boxWidth_ - 4 - offset);
+            int filledBarWidth = static_cast<int>(std::round(hpFraction * maxBarVisualWidth));
+            const int barAndPaddingLimit = std::max(0, boxWidth_ - 3 - offset);
+            int emptyBarPaddingWidth = std::max(0, barAndPaddingLimit - filledBarWidth);
+            std::string hp = (hpFraction > 0.25f) ? "\033[32m" : "\033[31m";
+            for (int i = 0; i < filledBarWidth; i++) {
                 hp += "─";
-                i++;
             }
-            hp +=  "\033[0m";
-
-            while (i < boxWidth_ - 3 - offset) {
-                hp += " ";
-                i++;
-            }
+            hp += "\033[0m";
+            hp += std::string(emptyBarPaddingWidth, ' ');
             hp += "|";
-            hp += std::string(3 - playerHp.length(), ' ') + playerHp + "/" + playerMaxHp + std::string(3 - playerMaxHp.length(), ' ');
+
+            int hpNumPadding = std::max(0, 3 - static_cast<int>(playerHpStr.length()));
+            int maxHpNumPadding = std::max(0, 3 - static_cast<int>(playerMaxHpStr.length()));
+            hp += std::string(hpNumPadding, ' ') + playerHpStr + "/" + playerMaxHpStr + std::string(maxHpNumPadding, ' ');
+
 
             std::cout << "| " << hp << " |" << std::endl;
             Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_ - offset, false);
             std::cout << "────────┘" << std::endl;
-        }
+            }
 
         int Menu::selectChoices(std::string &prompt, std::vector<std::string> &messages) const {
             int index = 0;

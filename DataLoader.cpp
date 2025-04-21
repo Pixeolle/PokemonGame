@@ -292,7 +292,7 @@ namespace PokemonGame {
         return maitres;
     }
 
-    void DataLoader::loadTypeMultipliers(TypeManager& typeManager) const {
+    void DataLoader::loadTypeMultipliers() const {
         std::ifstream file(typeMultipliersFilePath_);
         if (!file.is_open()) {
             throw std::invalid_argument("Impossible d'ouvrir  le fichier " + typeMultipliersFilePath_);
@@ -336,8 +336,8 @@ namespace PokemonGame {
             }
         }
         file.close();
+        TypeManager& typeManager = TypeManager::getInstance();
         typeManager.loadMultipliers(multipliers);
     }
-
 
 } // PokemonGame
