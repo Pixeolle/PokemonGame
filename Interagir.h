@@ -10,7 +10,7 @@ namespace PokemonGame {
     class Interagir {
     public:
         virtual ~Interagir() = default;
-        virtual void interact() const = 0;
+        [[nodiscard]] virtual std::string interact() const = 0;
     };
 
 }

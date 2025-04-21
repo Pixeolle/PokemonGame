@@ -20,11 +20,11 @@ namespace PokemonGame {
         explicit Maitre(std::string& name);
         ~Maitre() override = default;
 
-        void setDefeated();
-        void interact() const override;
+        void defeated() override;
+        [[nodiscard]] std::string interact() const override;
         [[nodiscard]] bool canInteract() const override;
 
-        [[nodiscard]] const float getDamageBonus() const;
+        [[nodiscard]] float getDamageBonus() const;
     };
 
 } // PokemonGame

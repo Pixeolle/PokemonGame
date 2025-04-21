@@ -32,7 +32,7 @@ namespace PokemonGame {
         void fullHeal();
         void displayInfo() const;
         [[nodiscard]] bool isFainted() const;
-        void interact() const override;
+        [[nodiscard]] std::string interact() const override;
         friend std::ostream& operator<<(std::ostream& out, const Pokemon& pokemon);
 
         [[nodiscard]] const std::string& getName() const;

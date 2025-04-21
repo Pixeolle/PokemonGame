@@ -14,12 +14,13 @@ namespace PokemonGame {
         badge_(Utils::String::trimValidateTitle(badge, "badge")),
         gymnase_(Utils::String::trimValidateTitle(gymnase, "gymnase")) {}
 
-    void Leader::setDefeated() {
+    void Leader::defeated() {
         isDefeated_ = true;
     }
 
-    void Leader::interact() const {
-        std::cout << "Bravo, continue! Grâce à ce badge et ceux des autres tu pourras défier un maitre!" << std::endl;
+    std::string Leader::interact() const {
+        std::string message = "Bravo, continue! Grâce à ce badge et ceux des autres tu pourras défier un maitre!";
+        return message;
     }
 
     void Leader::displayInfo() const {

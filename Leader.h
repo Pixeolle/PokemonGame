@@ -22,9 +22,9 @@ namespace PokemonGame {
         Leader(const std::string& name, const std::string& badge, const std::string& gymnase);
         ~Leader() override = default;
 
-        void setDefeated();
-        void interact() const override;
+        void defeated() override;
         void displayInfo() const;
+        [[nodiscard]] std::string interact() const override;
         [[nodiscard]] bool canInteract() const override;
 
         [[nodiscard]] const std::string& getBadge() const;

@@ -5,10 +5,9 @@
 #include <stdexcept>
 #include <iostream>
 #include <iomanip>
+#include <filesystem>
 
 #include "Utils.h"
-
-#include <filesystem>
 
 namespace PokemonGame::Utils {
 
@@ -61,9 +60,6 @@ namespace PokemonGame::Utils {
         std::string inputPath;
         bool pathIsValid = false;
 
-        int consoleWidth = Display::getConsoleWidth();
-
-
         while (!pathIsValid) {
             Display::printInBox(prompt, boxWidth);
             Display::printInBox("[Défaut: " + defaultPath + "]", boxWidth);
@@ -85,7 +81,7 @@ namespace PokemonGame::Utils {
                      std::cout << "│ " << "\033[32m" << "[OK] Fichier trouvé." << "\033[0m" << std::left << std::setw(boxWidth - 23) << "" << "│" << std::endl; // Vert
                     pathIsValid = true;
                 } else {
-                    std::cout << "│ " << "\033[31m" << "[ERREUR] Fichier non trouvé : " << resultPath << "\033[0m" << std::left << std::setw(boxWidth - 31 - resultPath.length()) << "" << "│" << std::endl; // Rouge
+                    std::cout << "│ " << "\033[31m" << "[ERREUR] Fichier non trouvé : " << resultPath << "\033[0m" << std::left << std::setw(boxWidth - 33 - resultPath.length()) << "" << "│" << std::endl; // Rouge
 
                 }
             } else {
@@ -147,7 +143,7 @@ namespace PokemonGame::Utils {
         std::cout << std::setw(padding) << "" << text << std::endl;
     }
 
-    void Display::drawBoxLine(const std::string& start, const std::string& middle, const std::string& end, int width) {
+    void Display::drawBoxLine(const std::string& start, const std::string& middle, const std::string& end, int width, bool endLine) {
 
         if (middle.empty()) {
             throw std::invalid_argument("Le caractère du milieu ne peut pas être vide dans drawBoxLine.");
@@ -163,13 +159,105 @@ namespace PokemonGame::Utils {
         for (int i = 0; i < width - 2; ++i) {
             std::cout << middle;
         }
-        std::cout << end << std::endl;
+        std::cout << end;
+        if (endLine) {
+            std::cout << std::endl;
+        }
     }
 
-    void Display::printInBox(const std::string& text, int boxWidth) {
-        int padding = boxWidth - 3 - estimateUtf8DisplayWidth(text);
-        if (padding < 0) padding = 0;
-        std::cout << "│ " << text << std::string(padding, ' ') << "│" << std::endl;
+    void Display::printInBox(const std::string& text, int boxWidth, bool deleteBeginSpace, bool endLine) {
+        int availableWidth = boxWidth - 4;
+        int currentByteIndex = 0;
+        int currentLineCharCount = 0;
+
+        std::cout << "| ";
+
+        while (currentByteIndex < text.length()) {
+            std::string nextCharStr;
+            size_t nextCharByteSize = 0;
+            size_t charLogicalIndex = 0;
+
+            size_t tempByteIndex = 0;
+            size_t tempCharIndex = 0;
+            while(tempByteIndex < currentByteIndex && tempByteIndex < text.length()){
+                 unsigned char c = text[tempByteIndex];
+                 size_t advance = 0;
+                 if ((c & 0x80) == 0) advance = 1;
+                 else if ((c & 0xE0) == 0xC0) advance = 2;
+                 else if ((c & 0xF0) == 0xE0) advance = 3;
+                 else if ((c & 0xF8) == 0xF0) advance = 4;
+                 else advance = 1;
+                 tempByteIndex += advance;
+                 if (tempByteIndex > text.length()) tempByteIndex = text.length();
+                 tempCharIndex++;
+            }
+            charLogicalIndex = tempCharIndex;
+
+
+            std::tie(nextCharStr, nextCharByteSize) = getUtf8Char(text, charLogicalIndex);
+
+
+            if (nextCharByteSize == 0) {
+                break;
+            }
+
+            int nextCharDisplayWidth = 1;
+
+
+            if (currentLineCharCount + nextCharDisplayWidth > availableWidth) {
+                int padding = availableWidth - currentLineCharCount;
+                std::cout << std::string(padding, ' ');
+                std::cout << " |\n| ";
+                currentLineCharCount = 0;
+            }
+
+            if ((nextCharStr != " " || currentLineCharCount != 0) || !deleteBeginSpace) {
+                std::cout << nextCharStr;
+                currentLineCharCount += nextCharDisplayWidth;
+            }
+            currentByteIndex += nextCharByteSize;
+        }
+
+        int lastLinePadding = availableWidth - currentLineCharCount;
+        if (lastLinePadding < 0) lastLinePadding = 0;
+        std::cout << std::string(lastLinePadding, ' ');
+        std::cout << " |";
+        if (endLine) {
+            std::cout << std::endl;
+        }
+    }
+
+    std::pair<std::string, size_t> Display::getUtf8Char(const std::string& s, size_t charIndex) {
+        size_t byteIndex = 0;
+        size_t currentCharlIndex = 0;
+        while(byteIndex < s.length()) {
+            if (currentCharlIndex == charIndex) {
+                unsigned char c = s[byteIndex];
+                size_t charByteSize = 0;
+                if ((c & 0x80) == 0) charByteSize = 1;
+                else if ((c & 0xE0) == 0xC0) charByteSize = 2;
+                else if ((c & 0xF0) == 0xE0) charByteSize = 3;
+                else if ((c & 0xF8) == 0xF0) charByteSize = 4;
+                else charByteSize = 1;
+
+                if (byteIndex + charByteSize > s.length()) charByteSize = s.length() - byteIndex;
+
+                return {s.substr(byteIndex, charByteSize), charByteSize};
+            }
+
+            unsigned char c = s[byteIndex];
+            size_t advance = 0;
+            if ((c & 0x80) == 0) advance = 1;
+            else if ((c & 0xE0) == 0xC0) advance = 2;
+            else if ((c & 0xF0) == 0xE0) advance = 3;
+            else if ((c & 0xF8) == 0xF0) advance = 4;
+            else advance = 1;
+
+            byteIndex += advance;
+            if (byteIndex > s.length()) byteIndex = s.length();
+            currentCharlIndex++;
+        }
+        return {"", 0};
     }
 
     int Display::estimateUtf8DisplayWidth(const std::string& text) {
@@ -193,5 +281,17 @@ namespace PokemonGame::Utils {
         }
         return width;
     }
+
+    void Display::displayBoxChoices(const std::string &prompt, const std::vector<std::string>& choices, int boxWidth, int select = 0) {
+
+        drawBoxLine("┌", "─", "┐", boxWidth);
+        printInBox(prompt, boxWidth);
+        drawBoxLine("├", "─", "┤", boxWidth);
+        for (int i = 0; i < choices.size(); i++) {
+            printInBox(i == select ? "> " + choices[i] : "  " + choices[i], boxWidth, false);
+        }
+        drawBoxLine("└", "─", "┘", boxWidth);
+    }
+
 
 } // PokemonGame

@@ -22,7 +22,7 @@ namespace PokemonGame {
         wins_++;
     }
 
-    void Joueur::addLose() {
+    void Joueur::defeated() {
         losses_++;
     }
 
@@ -45,5 +45,10 @@ namespace PokemonGame {
     int Joueur::getLosses() const {
         return losses_;
     }
+
+    void Joueur::swapPokemon(int index1, int index2) {
+        std::swap(pokemonTeam_[index1], pokemonTeam_[index2]);
+    }
+
 
 } // PokemonGame

@@ -60,7 +60,7 @@ namespace PokemonGame {
         return pokemonTeam_;
     }
 
-    const Pokemon* Entraineur::getPokemon(int index) const {
+    Pokemon* Entraineur::getPokemon(int index) const {
         if (index >= pokemonTeam_.size()) {
             throw std::invalid_argument("Index hors limite");
         }

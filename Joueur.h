@@ -25,13 +25,14 @@ namespace PokemonGame {
 
         void addBadge(const std::string& badgeName);
         void addWin();
-        void addLose();
+        void defeated() override;
         void displayStats() const;
         [[nodiscard]] bool canInteract() const override;
 
         [[nodiscard]] const std::unordered_set<std::string>& getBadges() const;
         [[nodiscard]] int getWins() const;
         [[nodiscard]] int getLosses() const;
+        void swapPokemon(int index1, int index2);
     };
 
 } // PokemonGame

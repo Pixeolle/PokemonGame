@@ -23,12 +23,11 @@ namespace PokemonGame {
     float TypeManager::getMultiplier(const std::vector<Type>& attackTypes, const std::vector<Type>& defenseTypes) const {
         float multiplier = 1.0f;
 
-        for (auto& attaqueType : attackTypes) {
+        for (auto& attackType : attackTypes) {
 
-            const auto attackIterator = multipliers_.find(attaqueType);
+            const auto attackIterator = multipliers_.find(attackType);
             if (attackIterator != multipliers_.end()) {
                 const auto& attackMultipliers = attackIterator->second;
-
                 for (auto& defenseType : defenseTypes) {
 
                     const auto defenseIterator = attackMultipliers.find(defenseType);

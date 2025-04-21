@@ -58,11 +58,11 @@ namespace PokemonGame {
         return hp_ <= 0;
     }
 
-    void Pokemon::interact() const {
+    std::string Pokemon::interact() const {
         std::string sound = name_.substr(0, std::min(name_.length(), static_cast<std::string::size_type>(4)));
         sound += sound;
 
-        std::cout << name_ << " : \"" << sound << "...\"";
+        return name_ + " : \"" + sound + "...\"";
     }
 
     std::ostream& operator<<(std::ostream& out, const Pokemon& pokemon) {

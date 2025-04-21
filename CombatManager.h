@@ -5,6 +5,7 @@
 #ifndef COMBATMANAGER_H
 #define COMBATMANAGER_H
 
+#include "CombatInfo.h"
 #include "Joueur.h"
 #include "Entraineur.h"
 #include "TypeManager.h"
@@ -17,15 +18,21 @@ namespace PokemonGame {
         Entraineur* entraineur_ = nullptr;
         TypeManager& typeManager_;
 
-        void playerTurn();
-        void oppoentTurn();
-        [[nodiscard]] bool checkCombatEnd() const;
+        int playerPokemonIndex_;
+        int opponentPokemonIndex_;
+
+
 
     public:
         explicit CombatManager(TypeManager& typeManager);
         ~CombatManager() = default;
 
-        bool startCombat(Joueur* player, Entraineur* opponent);
+        void startCombat(Joueur* player, Entraineur* opponent);
+        [[nodiscard]] int checkCombatEnd() const;
+        [[nodiscard]] static bool trainerKO(Entraineur* trainer) ;
+        [[nodiscard]] TurnInfo playerTurn();
+        [[nodiscard]] TurnInfo opponentTurn();
+        [[nodiscard]] CombatPokemonInfo getCombatPokemonInfo(bool player = true) const;
     };
 
 } // PokemonGame

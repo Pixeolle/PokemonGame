@@ -10,19 +10,20 @@ namespace PokemonGame {
 
     Maitre::Maitre(std::string& name) : Entraineur(name) {}
 
-    void Maitre::setDefeated() {
+    void Maitre::defeated() {
         isDefeated_ = true;
     }
 
-    void Maitre::interact() const {
-        std::cout << "Tu m'as bien battu, je vais retourner m'entrainer et revenir plus fort !" << std::endl;
+    std::string Maitre::interact() const {
+        std::string message = "Tu m'as bien battu, je vais retourner m'entrainer et revenir plus fort !";
+        return message;
     }
 
     bool Maitre::canInteract() const {
         return isDefeated_;
     }
 
-    const float Maitre::getDamageBonus() const {
+    float Maitre::getDamageBonus() const {
         return damageBonus_;
     }
 

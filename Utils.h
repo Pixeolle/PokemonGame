@@ -6,6 +6,7 @@
 #define UTILS_H
 
 #include <string>
+#include <vector>
 
 namespace PokemonGame::Utils::String {
 
@@ -29,11 +30,15 @@ namespace PokemonGame::Utils::Display {
 
     void printCentered(const std::string& text);
 
-    void drawBoxLine(const std::string& start, const std::string& middle, const std::string& end, int width);
+    void drawBoxLine(const std::string& start, const std::string& middle, const std::string& end, int width, bool endLine = true);
 
-    void printInBox(const std::string& text, int boxWidth);
+    void printInBox(const std::string& text, int boxWidth, bool deleteBeginSpace = true, bool endLine = true);
+
+    std::pair<std::string, size_t> getUtf8Char(const std::string& s, size_t charIndex);
 
     int estimateUtf8DisplayWidth(const std::string& text);
+
+    void displayBoxChoices(const std::string& prompt, const std::vector<std::string>& choices, int boxWidth, int select);
 
 }
 

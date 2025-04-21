@@ -77,6 +77,18 @@ namespace PokemonGame {
         throw std::invalid_argument("Type inconnu : '" + normaliseTypeName + "' (original: '" + typeName + "')");
     }
 
+    std::string typesToString(const std::vector<Type> &types) {
+        std::string result;
+        for (int i = 0; i < types.size(); i++) {
+             result += typeToString(types[i]);
+            if (i < types.size() - 1) {
+                result += " ";
+            }
+        }
+        return result;
+    }
+
+
     std::ostream& operator<<(std::ostream& out, Type type) {
         out << typeToString(type);
         return out;
