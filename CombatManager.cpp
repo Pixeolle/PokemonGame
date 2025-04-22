@@ -5,6 +5,8 @@
 
 #include "CombatManager.h"
 
+#include "Utils.h"
+
 namespace PokemonGame {
 
     CombatManager::CombatManager() : typeManager_(TypeManager::getInstance()), playerPokemonIndex_(0), opponentPokemonIndex_(0) {}
@@ -22,6 +24,16 @@ namespace PokemonGame {
         return 0;
     }
 
+    int CombatManager::findFirstPokemonAvailable(Entraineur* trainer) {
+        const auto& pokemonTeam = trainer->getPokemonTeam();
+        for (int i = 0; i < pokemonTeam.size(); i++) {
+            if (!pokemonTeam[i]->isFainted()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     bool CombatManager::trainerKO(Entraineur* trainer) {
         for (const auto& pokemon : trainer->getPokemonTeam()) {
             if (pokemon->getHp() != 0) {
@@ -31,11 +43,18 @@ namespace PokemonGame {
         return true;
     }
 
-    void CombatManager::startCombat(Joueur *player, Entraineur *opponent) {
+    bool CombatManager::startCombat(Joueur *player, Entraineur *opponent) {
         player_ = player;
         entraineur_ = opponent;
-        playerPokemonIndex_ = 0;
-        opponentPokemonIndex_ = 0;
+        playerPokemonIndex_ = findFirstPokemonAvailable(player);
+        opponentPokemonIndex_ = findFirstPokemonAvailable(opponent);
+
+        if (playerPokemonIndex_ == -1 || opponentPokemonIndex_ == -1) {
+            player_ = nullptr;
+            entraineur_ = nullptr;
+            return false;
+        }
+        return true;
     }
 
     TurnInfo CombatManager::playerTurn() {
@@ -69,6 +88,7 @@ namespace PokemonGame {
             else {
                 info.messages.push_back("Vous avez battu " + entraineur_->getName());
                 entraineur_->defeated();
+                player_->addWin();
             }
         }
 

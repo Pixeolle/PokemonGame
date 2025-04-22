@@ -420,7 +420,15 @@ namespace PokemonGame {
         }
 
         bool Menu::handleCombat(Entraineur *dresseur) {
-            combatManager_.startCombat(player_.get(), dresseur);
+            if (!combatManager_.startCombat(player_.get(), dresseur)) {
+                Utils::Display::clearConsole();
+                Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+                Utils::Display::printInBox("Tu n'as aucun pokémon capable de se battre. Fin du combat", boxWidth_);
+                Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+                std::cout << "Appuyez sur Entrée pour commencer..." << std::endl;
+                std::cin.get();
+                return false;
+            }
             int i = 0;
             TurnInfo turn;
 

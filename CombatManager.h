@@ -21,13 +21,13 @@ namespace PokemonGame {
         int playerPokemonIndex_;
         int opponentPokemonIndex_;
 
-
+        [[nodiscard]] static int findFirstPokemonAvailable(Entraineur* trainer) ;
 
     public:
         CombatManager();
         ~CombatManager() = default;
 
-        void startCombat(Joueur* player, Entraineur* opponent);
+        [[nodiscard]] bool startCombat(Joueur* player, Entraineur* opponent);
         [[nodiscard]] int checkCombatEnd() const;
         [[nodiscard]] static bool trainerKO(Entraineur* trainer) ;
         [[nodiscard]] TurnInfo playerTurn();
