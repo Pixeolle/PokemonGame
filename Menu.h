@@ -63,12 +63,12 @@ namespace PokemonGame {
         bool handleCombat(Entraineur* dresseur);
 
         void displayCombat(TurnInfo turn) const;
+        void displayPokemon(CombatPokemonInfo info) const;
     public:
         Menu();
         ~Menu() = default;
 
         void run();
-        void displayPokemon(CombatPokemonInfo info) const;
     };
 
 

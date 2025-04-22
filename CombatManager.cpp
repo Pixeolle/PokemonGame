@@ -24,7 +24,7 @@ namespace PokemonGame {
         return 0;
     }
 
-    int CombatManager::findFirstPokemonAvailable(Entraineur* trainer) {
+    int CombatManager::findFirstPokemonAvailable(const Entraineur* trainer) {
         const auto& pokemonTeam = trainer->getPokemonTeam();
         for (int i = 0; i < pokemonTeam.size(); i++) {
             if (!pokemonTeam[i]->isFainted()) {

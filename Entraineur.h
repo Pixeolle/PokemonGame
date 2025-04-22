@@ -28,8 +28,8 @@ namespace PokemonGame {
         void removePokemon(int index);
         void switchPokemon(int index1, int index2);
         void displayTeam() const;
-        [[nodiscard]] virtual bool canInteract() const = 0;
         virtual void defeated() = 0;
+        [[nodiscard]] virtual bool canInteract() const = 0;
 
         [[nodiscard]] const std::string& getName() const;
         [[nodiscard]] const std::vector<std::unique_ptr<Pokemon>>& getPokemonTeam() const;

@@ -21,7 +21,7 @@ namespace PokemonGame {
         int playerPokemonIndex_;
         int opponentPokemonIndex_;
 
-        [[nodiscard]] static int findFirstPokemonAvailable(Entraineur* trainer) ;
+        [[nodiscard]] static int findFirstPokemonAvailable(const Entraineur* trainer);
 
     public:
         CombatManager();
