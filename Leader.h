@@ -12,6 +12,12 @@
 
 namespace PokemonGame {
 
+    /**
+     * classe Leader
+     * @brief Représente un leader de gymnase dans le jeu Pokémon.
+     * La classe Leader hérite des classes Interagir et Entraineur. Elle contient des informations
+     * spécifiques à un leader, telles que le badge, le gymnase et l'état de défaite.
+     */
     class Leader final : public Interagir, public Entraineur {
     private:
         const std::string badge_;
@@ -19,6 +25,12 @@ namespace PokemonGame {
         bool isDefeated_ = false;
 
     public:
+        /**
+         * Constructeur de la classe Leader.
+         * @param name Nom du leader.
+         * @param badge Badge du leader.
+         * @param gymnase Gymnase du leader.
+         */
         Leader(const std::string& name, const std::string& badge, const std::string& gymnase);
         ~Leader() override = default;
 

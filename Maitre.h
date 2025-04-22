@@ -11,12 +11,21 @@
 
 namespace PokemonGame {
 
+    /**
+     * @brief La classe Maitre représente un maitre Pokémon.
+    * La classe Maitre hérite des classes Interagir et Entraineur. Elle contient des informations
+     * spécifiques à un maître, telles que le bonus de dégâts et l'état de défaite.
+     */
     class Maitre final : public Interagir, public Entraineur{
     private:
         const float damageBonus_ = 0.25;
         bool isDefeated_ = false;
 
     public:
+        /**
+         * @brief Constructeur explicite de la classe Maitre.
+         * @param name Nom du maître.
+         */
         explicit Maitre(std::string& name);
         ~Maitre() override = default;
 

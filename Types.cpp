@@ -1,6 +1,4 @@
-//
-// Created by olbnf on 17/04/2025.
-//
+
 
 #include "Types.h"
 
@@ -8,6 +6,11 @@
 
 namespace PokemonGame {
 
+    /**
+     * @brief Convertit un type Pokémon en sa représentation textuelle.
+     * @param type Le type Pokémon à convertir.
+     * @return std::string La chaîne de caractères représentant le type.
+     */
     std::string typeToString(Type type) {
         switch (type) {
             case Type::FEU:    return "Feu";
@@ -33,6 +36,13 @@ namespace PokemonGame {
         return "ErreurType";
     }
 
+
+    /**
+     * @brief Convertit une chaîne de caractères en un type Pokémon.
+     * @param typeName La chaîne de caractères représentant le type.
+     * @return Type Le type Pokémon correspondant.
+     * @throws std::invalid_argument Si le type est inconnu.
+     */
     Type stringToType(const std::string& typeName) {
         std::string normaliseTypeName = Utils::String::toTitle(Utils::String::trim(typeName));
 
@@ -77,6 +87,11 @@ namespace PokemonGame {
         throw std::invalid_argument("Type inconnu : '" + normaliseTypeName + "' (original: '" + typeName + "')");
     }
 
+    /**
+     * @brief Convertit une liste de types Pokémon en une chaîne de caractères.
+     * @param types Le vecteur contenant les types Pokémon.
+     * @return std::string La chaîne de caractères représentant les types, séparés par des espaces.
+     */
     std::string typesToString(const std::vector<Type> &types) {
         std::string result;
         for (int i = 0; i < types.size(); i++) {
@@ -88,12 +103,23 @@ namespace PokemonGame {
         return result;
     }
 
-
+    /**
+     * @brief Surcharge de l'opérateur << pour afficher un type Pokémon.
+     * @param out Le flux de sortie.
+     * @param type Le type Pokémon à afficher.
+     * @return std::ostream& Le flux de sortie modifié.
+     */
     std::ostream& operator<<(std::ostream& out, Type type) {
         out << typeToString(type);
         return out;
     }
 
+    /**
+     * @brief Surcharge de l'opérateur << pour afficher une liste de types Pokémon.
+     * @param out Le flux de sortie.
+     * @param types Le vecteur contenant les types Pokémon à afficher.
+     * @return std::ostream& Le flux de sortie modifié.
+     */
     std::ostream& operator<<(std::ostream& out, const std::vector<Type>& types) {
         for (int i = 0; i < types.size(); i++) {
             out << types[i];

@@ -12,6 +12,11 @@
 
 namespace PokemonGame {
 
+
+    /**
+     * classe Joueur
+     * @brief Représente un joueur dans le jeu Pokémon, hérite de la classe Entraineur.
+     */
     class Joueur final : public Entraineur {
     private:
         std::unordered_set<std::string> badges_;

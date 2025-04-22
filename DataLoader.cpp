@@ -1,6 +1,4 @@
-//
-// Created by olbnf on 17/04/2025.
-//
+
 
 #include <sstream>
 #include <fstream>
@@ -14,6 +12,15 @@
 
 namespace PokemonGame {
 
+    /**
+     * Constructeur de la classe DataLoader.
+     * Initialise les chemins des fichiers nécessaires pour charger les données.
+     * @param pokemonFilePath Chemin du fichier contenant les données des Pokémon.
+     * @param joueurFilePath Chemin du fichier contenant les données du joueur.
+     * @param leaderFilePath Chemin du fichier contenant les données des leaders.
+     * @param maitreFilePath Chemin du fichier contenant les données des maîtres.
+     * @param typeManagerFilePath Chemin du fichier contenant la table des multiplicateurs de types.
+     */
     DataLoader::DataLoader(std::string& pokemonFilePath, std::string& joueurFilePath, std::string& leaderFilePath, std::string& maitreFilePath, std::string& typeManagerFilePath) :
         pokemonFilePath_(Utils::String::trimValidate(pokemonFilePath, "chemin du fichier pokémon")),
         joueurFilePath_(Utils::String::trimValidate(joueurFilePath, "chemin du fichier joueur")),
@@ -22,6 +29,12 @@ namespace PokemonGame {
         typeMultipliersFilePath_(Utils::String::trimValidate(typeManagerFilePath, "chemin du fichier de la table des types"))
     {}
 
+    /**
+     * Analyse une ligne CSV en fonction d'un délimiteur donné.
+     * @param line Ligne CSV à analyser.
+     * @param delimiter Caractère délimitant les champs (par défaut ',').
+     * @return Un vecteur contenant les champs extraits de la ligne.
+     */
     std::vector<std::string> DataLoader::parseCsvLine(const std::string& line, char delimiter = ',') {
         std::vector<std::string> fields;
         std::stringstream ss(line);
@@ -35,6 +48,12 @@ namespace PokemonGame {
         return fields;
     }
 
+    /**
+     * Charge les données des Pokémon à partir du fichier CSV.
+     * @return Une map associant le nom des Pokémon à leurs objets correspondants.
+     * @throws std::invalid_argument Si le fichier ne peut pas être ouvert.
+     * @throws std::runtime_error Si des colonnes requises sont manquantes dans le fichier.
+     */
     std::unordered_map<std::string, std::unique_ptr<Pokemon>> DataLoader::loadPokemon() const {
         std::ifstream file(pokemonFilePath_);
         if (!file.is_open()) {
@@ -105,6 +124,13 @@ namespace PokemonGame {
         return pokemons;
     }
 
+    /***
+     * Charge les données du joueur à partir du fichier CSV.
+     * @param pokemons Map associant le nom des Pokémon à leurs objets correspondants.
+     * @return Un pointeur unique vers l'objet Joueur chargé.
+     * @throws std::invalid_argument Si le fichier ne peut pas être ouvert.
+     * @throws std::runtime_error Si des colonnes requises sont manquantes dans le fichier.
+     */
     std::unique_ptr<Joueur> DataLoader::loadJoueur(std::unordered_map<std::string, std::unique_ptr<Pokemon>>& pokemons) const {
         std::ifstream file(joueurFilePath_);
         if (!file.is_open()) {

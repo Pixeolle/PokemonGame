@@ -8,16 +8,31 @@
 #include "TypeManager.h"
 
 namespace PokemonGame {
-
+    /**
+     * @brief Charge la matrice des multiplicateurs de types dans le gestionnaire.
+     * @param multipliers La matrice des multiplicateurs de types.
+     * La clé externe représente le type d'attaque, et la clé interne représente le type de défense avec sa valeur associée (le multiplicateur).
+     */
     void TypeManager::loadMultipliers(std::unordered_map<Type, std::unordered_map<Type, float>>& multipliers) {
         multipliers_ = multipliers;
     }
 
+    /**
+     * @brief Récupère l'instance unique de TypeManager (singleton).
+     *
+     * @return TypeManager& Référence à l'instance unique de TypeManager.
+     */
     TypeManager& TypeManager::getInstance() {
         static TypeManager instance;
         return instance;
     }
 
+    /**
+     * @brief Calcule le multiplicateur total en fonction des types d'attaque et de défense.
+     * @param attackTypes Liste des types d'attaque.
+     * @param defenseTypes Liste des types de défense.
+     * @return float Le multiplicateur total calculé.
+     */
     float TypeManager::getMultiplier(const std::vector<Type>& attackTypes, const std::vector<Type>& defenseTypes) const {
         float multiplier = 1.0f;
 
@@ -38,6 +53,11 @@ namespace PokemonGame {
         return multiplier;
     }
 
+    /**
+     * @brief Affiche la matrice des multiplicateurs de types sous forme de tableau.
+     * Cette méthode affiche les types d'attaque et de défense dans un tableau lisible,
+     * avec les multiplicateurs correspondants.
+     */
     void TypeManager::displayMultiplierMatrix() const {
 
         const std::vector<Type> displayOrder = {

@@ -7,6 +7,8 @@
 
 #include <string>
 #include <vector>
+
+/// @brief Structure pour représenter les informations d'un Pokémon au combat.
 struct CombatPokemonInfo {
     std::string name;
     int currentHp;

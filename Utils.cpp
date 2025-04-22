@@ -11,6 +11,11 @@
 
 namespace PokemonGame::Utils {
 
+    /**
+     * @brief Convertit une chaîne de caractères en format "Title Case".
+     * @param str La chaîne de caractères à convertir.
+     * @return La chaîne convertie en "Title Case".
+     */
     std::string String::toTitle(std::string str) {
         for (int i = 0; i < str.length(); i++) {
             if (i == 0 || str[i - 1] == ' ') {
@@ -24,6 +29,12 @@ namespace PokemonGame::Utils {
         return str;
     }
 
+
+    /**
+     * @brief Supprime les espaces au début et à la fin d'une chaîne de caractères.
+     * @param str La chaîne de caractères à traiter.
+     * @return La chaîne sans espaces au début et à la fin.
+     */
     std::string String::trim(std::string str) {
         auto start = str.begin();
         while (start != str.end() && std::isspace(*start)) {
@@ -38,6 +49,13 @@ namespace PokemonGame::Utils {
         return std::string(start, end + 1);
     }
 
+    /**
+     * @brief Supprime les espaces d'une chaîne et valide qu'elle n'est pas vide.
+     * @param input La chaîne de caractères à traiter.
+     * @param fieldName Le nom du champ pour le message d'erreur.
+     * @return La chaîne sans espaces.
+     * @throws std::invalid_argument Si la chaîne est vide après le traitement.
+     */
     std::string String::trimValidate(const std::string& input, const std::string& fieldName) {
         std::string trimmed = trim(input);
         if (trimmed.empty()) {
@@ -47,6 +65,13 @@ namespace PokemonGame::Utils {
         return trimmed;
     }
 
+    /**
+     * @brief Supprime les espaces d'une chaîne, valide qu'elle n'est pas vide, et la convertit en "Title Case".
+     * @param input La chaîne de caractères à traiter.
+     * @param fieldName Le nom du champ pour le message d'erreur.
+     * @return La chaîne traitée et convertie en "Title Case".
+     * @throws std::invalid_argument Si la chaîne est vide après le traitement.
+     */
     std::string String::trimValidateTitle(const std::string& input, const std::string& fieldName) {
         std::string trimmed = trim(input);
         if (trimmed.empty()) {
@@ -56,6 +81,14 @@ namespace PokemonGame::Utils {
         return toTitle(trimmed);
     }
 
+    /**
+     * @brief Demande et valide un chemin d'accès saisi par l'utilisateur.
+     * @param prompt Le message à afficher pour demander le chemin.
+     * @param defaultPath Le chemin par défaut à utiliser si l'utilisateur ne saisit rien.
+     * @param resultPath La variable où stocker le chemin validé.
+     * @param boxWidth La largeur de la boîte d'affichage.
+     * @throws std::invalid_argument Si une erreur de lecture de l'entrée se produit.
+     */
     void String::promptAndValidatePath(const std::string& prompt, const std::string& defaultPath, std::string& resultPath, int boxWidth) {
         std::string inputPath;
         bool pathIsValid = false;
@@ -227,6 +260,12 @@ namespace PokemonGame::Utils {
         }
     }
 
+    /**
+     * @brief Récupère le caractère UTF-8 à l'index spécifié dans la chaîne.
+     * @param s La chaîne de caractères.
+     * @param charIndex L'index du caractère à récupérer.
+     * @return Un couple contenant le caractère UTF-8 et sa taille en octets.
+     */
     std::pair<std::string, size_t> Display::getUtf8Char(const std::string& s, size_t charIndex) {
         size_t byteIndex = 0;
         size_t currentCharlIndex = 0;
@@ -260,6 +299,11 @@ namespace PokemonGame::Utils {
         return {"", 0};
     }
 
+    /**
+     * @brief Estime la largeur d'affichage d'une chaîne UTF-8.
+     * @param text La chaîne à évaluer.
+     * @return La largeur d'affichage estimée.
+     */
     int Display::estimateUtf8DisplayWidth(const std::string& text) {
         int width = 0;
         for (size_t i = 0; i < text.length();) {

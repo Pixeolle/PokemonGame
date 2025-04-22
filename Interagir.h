@@ -7,6 +7,10 @@
 
 namespace PokemonGame {
 
+    /**
+     * @brief Interface pour les classes qui interagissent avec le joueur.
+     * Cette interface définit une méthode d'interaction qui doit être implémentée par toutes les classes qui l'héritent.
+     */
     class Interagir {
     public:
         virtual ~Interagir() = default;

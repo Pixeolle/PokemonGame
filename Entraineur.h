@@ -1,6 +1,4 @@
-//
-// Created by olbnf on 16/04/2025.
-//
+
 
 #ifndef ENTRAINEUR_H
 #define ENTRAINEUR_H
@@ -13,6 +11,9 @@
 
 namespace PokemonGame {
 
+    /**
+     * @brief Classe représentant un dresseur de Pokémon
+     */
     class Entraineur {
     protected:
         const std::string name_;

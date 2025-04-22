@@ -12,6 +12,10 @@
 
 namespace PokemonGame {
 
+    /**
+     * @brief Classe gérant le combat entre le joueur et un entraîneur.
+     * Elle permet de gérer les actions du joueur et de l'entraîneur, ainsi que l'état des Pokémon en combat.
+     */
     class CombatManager {
     private:
         Joueur* player_ = nullptr;

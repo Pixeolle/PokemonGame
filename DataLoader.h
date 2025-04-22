@@ -1,6 +1,3 @@
-//
-// Created by olbnf on 17/04/2025.
-//
 
 #ifndef DATALOADER_H
 #define DATALOADER_H
@@ -18,6 +15,9 @@
 
 namespace PokemonGame {
 
+    /**
+     * @brief Class to load data from CSV files.
+     */
     class DataLoader {
     private:
         std::string pokemonFilePath_;

@@ -8,6 +8,18 @@
 
 namespace PokemonGame {
 
+    /**
+     * classe Maitre
+     * @brief Représente un maître Pokémon dans le jeu, hérite de la classe Entraineur.
+     * La classe Maitre contient des fonctionnalités spécifiques à un maître Pokémon,
+     * telles que la gestion de son état de défaite, l'interaction avec les joueurs,
+     * et un bonus de dégâts.
+     */
+
+    /**
+     * Constructeur de la classe Maitre
+     * @param name : nom du Maitre
+     */
     Maitre::Maitre(std::string& name) : Entraineur(name) {}
 
     void Maitre::defeated() {

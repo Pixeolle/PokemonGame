@@ -13,6 +13,9 @@
 
 namespace PokemonGame {
 
+    /**
+     * @brief Classe qui représente un Pokémon.
+     */
     class Pokemon : public Interagir{
     private:
         const std::string name_;
@@ -23,6 +26,14 @@ namespace PokemonGame {
         const int attackPower_;
 
     public:
+        /**
+         * @brief Constructeur de la classe Pokemon.
+         * @param name Nom du Pokémon.
+         * @param hp Points de vie du Pokémon.
+         * @param types Types du Pokémon.
+         * @param attackName Nom de l'attaque du Pokémon.
+         * @param attackPower Puissance de l'attaque du Pokémon.
+         */
         Pokemon(const std::string& name, int hp, const std::vector<Type>& types, const std::string& attackName, int attackPower);
         Pokemon(const Pokemon& other);
         ~Pokemon() override = default;

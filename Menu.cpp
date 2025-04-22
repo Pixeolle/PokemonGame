@@ -1,6 +1,3 @@
-//
-// Created by olbnf on 17/04/2025.
-//
 
 #include <iostream>
 #include <thread>
@@ -11,13 +8,19 @@
 #include "Menu.h"
 #include "Utils.h"
 
-namespace PokemonGame {
 
-        Menu::Menu()
+
+namespace PokemonGame {
+    /**
+     * @brief Constructeur de la classe Menu.
+     * Initialise le menu, charge les données et gère l'affichage du menu principal.
+     */
+    Menu::Menu()
             : combatManager_(),
               boxWidth_(std::min(80, Utils::Display::getConsoleWidth() - 4)),
               selectedPokemonIndex_(0){
 
+            //Permet de réinitialiser la console
             while (!stateStack_.empty()) stateStack_.pop();
             stateStack_.push(MenuState::MAIN);
 
@@ -64,15 +67,19 @@ namespace PokemonGame {
             }
         }
 
-        bool Menu::loadData() {
+    /**
+     * @brief Charge les données du jeu à partir de fichiers CSV (chemin spécifié par défaut ici mais demandé lors du chargement).
+     * @return True si les données ont été chargées avec succès, sinon faux.
+     */
+    bool Menu::loadData() {
 
             Utils::Display::clearConsole();
 
-            const std::string defaultPokemonFile = R"(C:\Users\olbnf\Downloads\pokemon.csv)";
-            const std::string defaultJoueurFile = R"(C:\Users\olbnf\Downloads\joueur.csv)";
-            const std::string defaultLeadersFile = R"(C:\Users\olbnf\Downloads\leaders.csv)";
-            const std::string defaultMaitresFile = R"(C:\Users\olbnf\Downloads\maitres.csv)";
-            const std::string defaultTypesMultiplierFile = R"(C:\Users\olbnf\Downloads\typeMatrixPokemon.csv)";
+            const std::string defaultPokemonFile = R"(C:\Users\Raphael\Downloads\pokemon.csv)";
+            const std::string defaultJoueurFile = R"(C:\Users\Raphael\Downloads\joueur.csv)";
+            const std::string defaultLeadersFile = R"(C:\Users\Raphael\Downloads\leaders.csv)";
+            const std::string defaultMaitresFile = R"(C:\Users\Raphael\Downloads\maitres.csv)";
+            const std::string defaultTypesMultiplierFile = R"(C:\Users\Raphael\Downloads\typeMatrixPokemon.csv)";
 
             std::string pokemonFilePath = defaultPokemonFile;
             std::string typeMultipliersFilePath = defaultTypesMultiplierFile;
@@ -103,6 +110,7 @@ namespace PokemonGame {
                 std::cout << "\nAppuyez sur Entrée pour continuer..." << std::endl;
                 std::cin.get();
 
+                //appelle de la classe DataLoader
                 DataLoader dataLoader(pokemonFilePath, joueurFilePath, leaderFilePath, maitreFilePath, typeMultipliersFilePath);
 
                 pokemons_ = dataLoader.loadPokemon();
@@ -141,6 +149,10 @@ namespace PokemonGame {
             return true;
         }
 
+        /**
+         * @brief Fonction principale qui gère l'affichage du menu et les interactions avec l'utilisateur.
+         * Elle utilise une pile d'états pour gérer les différents menus et sous-menus.
+         */
         void Menu::run() {
 
             while (!stateStack_.empty()) {
@@ -188,6 +200,10 @@ namespace PokemonGame {
             }
         }
 
+        /**
+         * @brief Gère le menu principal et les choix de l'utilisateur.
+         * Affiche les options disponibles et gère la sélection de l'utilisateur.
+         */
         void Menu::handleMainMenu() {
             std::string prompt = "Menu Principal";
             std::vector<std::string> choices = {"Pokédex", "Soigner mon équipe", "Gérer mes Pokémons", "Afficher mes statistiques", "Affronter un Leader", "Défier un Maitre", "Quitter"};
@@ -224,6 +240,9 @@ namespace PokemonGame {
             }
         }
 
+        /**
+         * @brief Gère l'affichage de la liste des Pokémon dans le Pokédex.
+         */
         void Menu::handlePokemonList() {
             Utils::Display::clearConsole();
             Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
@@ -242,6 +261,10 @@ namespace PokemonGame {
             stateStack_.pop();
         }
 
+        /**
+         * @brief Gère le soin de l'équipe du joueur.
+         * Affiche un message indiquant que tous les Pokémon sont soignés.
+         */
         void Menu::handleHeal() {
                 player_->healTeam();
                 Utils::Display::clearConsole();
@@ -254,6 +277,10 @@ namespace PokemonGame {
                 stateStack_.pop();
         }
 
+
+        /**
+         * @brief Gère l'affichage de la liste des Pokémon du joueur.
+         */
         void Menu::handlePlayerPokemonList() {
                 std::string prompt = "Mes Pokémons";
                 std::vector<std::string> choices;
@@ -273,6 +300,10 @@ namespace PokemonGame {
 
         }
 
+        /**
+         * @brief Gère les actions possibles sur le Pokémon sélectionné par le joueur.
+         * Affiche les options disponibles et gère la sélection de l'utilisateur.
+         */
         void Menu::handlePlayerPokemonActions() {
             const Pokemon* selectedPokemon = player_->getPokemon(selectedPokemonIndex_);
             std::string prompt = selectedPokemon->getName();
@@ -339,6 +370,8 @@ namespace PokemonGame {
             stateStack_.pop();
         }
 
+
+
         void Menu::handleTrainerList() {
                 std::string prompt = "Liste des Leaders";
                 std::vector<std::string> choices;
@@ -372,6 +405,10 @@ namespace PokemonGame {
                 stateStack_.pop();
             }
 
+        /**
+         * @brief Gère le défi contre un Maître Pokémon.
+         * Affiche un message si aucun Maître n'est disponible et lance un combat avec un Maître aléatoire.
+         */
         void Menu::handleChallengeMaster() {
             Utils::Display::clearConsole();
             if (maitres_.empty()) {
@@ -390,6 +427,7 @@ namespace PokemonGame {
             }
             stateStack_.pop();
         }
+
 
         void Menu::handleInteract() {
             std::string prompt = "Entraineurs ";
@@ -419,6 +457,12 @@ namespace PokemonGame {
             std::cin.get();
         }
 
+        /**
+         * @brief Gère le combat entre le joueur et un dresseur.
+         * Affiche les informations sur les Pokémon et gère les tours de combat.
+         * @param dresseur Le dresseur avec lequel le joueur combat.
+         * @return True si le combat est gagné, sinon faux.
+         */
         bool Menu::handleCombat(Entraineur *dresseur) {
             if (!combatManager_.startCombat(player_.get(), dresseur)) {
                 Utils::Display::clearConsole();
@@ -429,6 +473,7 @@ namespace PokemonGame {
                 std::cin.get();
                 return false;
             }
+            // Affiche les informations sur les Pokémon du joueur et de l'adversaire
             int i = 0;
             TurnInfo turn;
 
@@ -463,6 +508,10 @@ namespace PokemonGame {
             return true;
         }
 
+        /**
+         * @brief Affiche les informations sur le combat en cours.
+         * @param turn Les informations sur le tour de combat.
+         */
         void Menu::displayCombat(TurnInfo turn) const {
             Utils::Display::clearConsole();
             displayPokemon(turn.opponentPokemon);
@@ -480,6 +529,10 @@ namespace PokemonGame {
 
         }
 
+        /**
+         * @brief Affiche les informations sur un Pokémon dans une boîte.
+         * @param info Les informations sur le Pokémon à afficher.
+         */
         void Menu::displayPokemon(CombatPokemonInfo info) const {
             constexpr int offset = 9;
             Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_ - offset);
@@ -513,6 +566,13 @@ namespace PokemonGame {
             std::cout << "────────┘" << std::endl;
             }
 
+
+        /**
+         * @brief Affiche une boîte de sélection avec les choix disponibles.
+         * @param prompt Le message à afficher en haut de la boîte.
+         * @param messages Les choix disponibles.
+         * @return L'index du choix sélectionné.
+         */
         int Menu::selectChoices(std::string &prompt, std::vector<std::string> &messages) const {
             int index = 0;
             int input = 0;

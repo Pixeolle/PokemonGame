@@ -19,6 +19,7 @@
 
 
 namespace PokemonGame {
+    // Enumération des états du menu
     enum class MenuState {
         MAIN,
         POKEMON_LIST,
@@ -32,6 +33,7 @@ namespace PokemonGame {
         INTERACT
     };
 
+    // Classe Menu et ses attributs
     class Menu {
     private:
         std::unique_ptr<Joueur> player_;
@@ -45,6 +47,7 @@ namespace PokemonGame {
         int selectedPokemonIndex_;
         std::vector<Entraineur*> interactTrainer_;
 
+        /// [[no discard]] signifie que la fonction ne doit pas être ignorée
         [[nodiscard]] bool loadData();
         [[nodiscard]] bool allLeaderDefeated() const;
         [[nodiscard]] int selectChoices(std::string& prompt, std::vector<std::string>& messages) const;

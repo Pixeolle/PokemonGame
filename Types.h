@@ -11,6 +11,10 @@
 
 namespace PokemonGame {
 
+    /**
+     * @enum Type
+     * @brief Représente les différents types de Pokémon.
+     */
     enum class Type {
         FEU,
         EAU,
@@ -37,19 +41,6 @@ namespace PokemonGame {
     [[nodiscard]] std::string typesToString(const std::vector<Type>& types);
     std::ostream& operator<<(std::ostream& out, Type type);
     std::ostream& operator<<(std::ostream& out, const std::vector<Type>& types);
-
-}
-
-namespace std {
-
-    template <>
-    struct hash<PokemonGame::Type> {
-
-        size_t operator()(PokemonGame::Type const& t) const noexcept {
-            auto underlyingValue = static_cast<std::underlying_type_t<PokemonGame::Type>>(t);
-            return std::hash<std::underlying_type_t<PokemonGame::Type>>{}(underlyingValue);
-        }
-    };
 
 }
 
