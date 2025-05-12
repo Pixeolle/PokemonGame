@@ -75,11 +75,11 @@ namespace PokemonGame {
 
             Utils::Display::clearConsole();
 
-            const std::string defaultPokemonFile = R"(C:\Users\Raphael\Downloads\pokemon.csv)";
-            const std::string defaultJoueurFile = R"(C:\Users\Raphael\Downloads\joueur.csv)";
-            const std::string defaultLeadersFile = R"(C:\Users\Raphael\Downloads\leaders.csv)";
-            const std::string defaultMaitresFile = R"(C:\Users\Raphael\Downloads\maitres.csv)";
-            const std::string defaultTypesMultiplierFile = R"(C:\Users\Raphael\Downloads\typeMatrixPokemon.csv)";
+            const std::string defaultPokemonFile = R"(C:\Users\olbnf\Downloads\pokemon.csv)";
+            const std::string defaultJoueurFile = R"(C:\Users\olbnf\Downloads\joueur.csv)";
+            const std::string defaultLeadersFile = R"(C:\Users\olbnf\Downloads\leaders.csv)";
+            const std::string defaultMaitresFile = R"(C:\Users\olbnf\Downloads\maitres.csv)";
+            const std::string defaultTypesMultiplierFile = R"(C:\Users\olbnf\Downloads\typeMatrixPokemon.csv)";
 
             std::string pokemonFilePath = defaultPokemonFile;
             std::string typeMultipliersFilePath = defaultTypesMultiplierFile;
@@ -411,10 +411,30 @@ namespace PokemonGame {
          */
         void Menu::handleChallengeMaster() {
             Utils::Display::clearConsole();
+
+            if (!leaders_.empty()) {
+                for (const auto& trainer : leaders_) {
+                    if (!trainer->canInteract()) {
+                        Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+                        Utils::Display::printInBox("Vous n'avez pas vaincu tout les leaders, revenez lorsque ce sera le cas", boxWidth_);
+                        Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+                        std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+                        std::cin.get();
+                        stateStack_.pop();
+                        return;
+                    }
+                }
+            }
+
+
             if (maitres_.empty()) {
                 Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
                 Utils::Display::printInBox("Aucun Maitre n'est disponible", boxWidth_);
                 Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+                std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+                std::cin.get();
+                stateStack_.pop();
+                return;
             }
 
             std::random_device rd;
@@ -494,18 +514,19 @@ namespace PokemonGame {
 
                 displayCombat(turn);
 
-                std::cout << "Appuyez sur Entrée pour continuer..."<< std::endl;
+                std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
                 std::cin.get();
                 i++;
 
             }
 
+            int combatEnd = combatManager_.checkCombatEnd();
             dresseur->healTeam();
 
-            if (combatManager_.checkCombatEnd() == 1) {
-                return false;
+            if (combatEnd == 1) {
+                return true;
             }
-            return true;
+            return false;
         }
 
         /**

@@ -46,6 +46,10 @@ namespace PokemonGame {
         [[nodiscard]] std::string interact() const override;
         friend std::ostream& operator<<(std::ostream& out, const Pokemon& pokemon);
 
+
+        /**
+         *
+         */
         [[nodiscard]] const std::string& getName() const;
         [[nodiscard]] int getMaxHp() const;
         [[nodiscard]] int getHp() const;
