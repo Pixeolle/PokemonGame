@@ -413,16 +413,14 @@ namespace PokemonGame {
             Utils::Display::clearConsole();
 
             if (!leaders_.empty()) {
-                for (const auto& trainer : leaders_) {
-                    if (!trainer->canInteract()) {
-                        Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
-                        Utils::Display::printInBox("Vous n'avez pas vaincu tout les leaders, revenez lorsque ce sera le cas", boxWidth_);
-                        Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
-                        std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
-                        std::cin.get();
-                        stateStack_.pop();
-                        return;
-                    }
+                if (allLeaderDefeated()) {
+                    Utils::Display::drawBoxLine("┌", "─", "┐", boxWidth_);
+                    Utils::Display::printInBox("Vous n'avez pas vaincu tout les leaders, revenez lorsque ce sera le cas", boxWidth_);
+                    Utils::Display::drawBoxLine("└", "─", "┘", boxWidth_);
+                    std::cout << "Appuyez sur Entrée pour continuer..." << std::endl;
+                    std::cin.get();
+                    stateStack_.pop();
+                    return;
                 }
             }
 
