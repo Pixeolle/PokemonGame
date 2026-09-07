@@ -75,11 +75,11 @@ namespace PokemonGame {
 
             Utils::Display::clearConsole();
 
-            const std::string defaultPokemonFile = R"(C:\Users\olbnf\Downloads\pokemon.csv)";
-            const std::string defaultJoueurFile = R"(C:\Users\olbnf\Downloads\joueur.csv)";
-            const std::string defaultLeadersFile = R"(C:\Users\olbnf\Downloads\leaders.csv)";
-            const std::string defaultMaitresFile = R"(C:\Users\olbnf\Downloads\maitres.csv)";
-            const std::string defaultTypesMultiplierFile = R"(C:\Users\olbnf\Downloads\typeMatrixPokemon.csv)";
+            const std::string defaultPokemonFile = R"pokemon.csv";
+            const std::string defaultJoueurFile = R"joueur.csv";
+            const std::string defaultLeadersFile = R"leaders.csv";
+            const std::string defaultMaitresFile = R"maitres.csv";
+            const std::string defaultTypesMultiplierFile = R"typeMatrixPokemon.csv";
 
             std::string pokemonFilePath = defaultPokemonFile;
             std::string typeMultipliersFilePath = defaultTypesMultiplierFile;
